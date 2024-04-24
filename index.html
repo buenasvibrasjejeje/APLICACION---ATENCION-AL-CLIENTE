@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base target="_top">
+  
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f0f0f0;
+    }
+    form {
+      max-width: 600px;
+      margin: 20px auto;
+      padding: 20px;
+      background-color: #fff;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+    input[type="text"],
+    input[type="date"],
+    input[type="time"],
+    select,
+    textarea {
+      width: calc(100% - 20px);
+      padding: 10px;
+      margin-bottom: 20px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      box-sizing: border-box;
+    }
+    select {
+      appearance: none;
+      background-image: linear-gradient(45deg, transparent 50%, #ccc 50%);
+      background-position: calc(100% - 20px) calc(1em + 2px);
+      background-size: 10px 10px;
+      background-repeat: no-repeat;
+      padding-right: 30px;
+    }
+    textarea {
+      height: 100px;
+    }
+    input[type="button"] {
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      padding: 10px 20px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    input[type="button"]:hover {
+      background-color: #0056b3;
+    }
+    .btn-enviar {
+      display: block;
+      width: 100%;
+      padding: 12px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background-color 0.3s ease;
+    }
+    .btn-enviar:hover {
+      background-color: #45a049;
+    }
+  </style>
+</head>
+
+
+<body>
+  <form id="formulario">
+
+<label for="colaborador">Colaborador:</label>
+  <input type="text" id="colaborador" name="colaborador" oninput="filtrarOpcionesColaborador(this.value)">
+  <div id="opciones_sugeridas_colaborador"></div>
+
+    
+    
+    <label for="fecha">Fecha de atención:</label>
+    <input type="date" id="fecha" name="fecha" onclick="setFechaActual()">
+
+
+    <label for="inicio">Inicio de llamada:</label>
+    <input type="time" id="inicio" name="inicio" onclick="setHoraActual()">
+
+
+    <label for="fin">Fin de llamada:</label>
+    <input type="time" id="fin" name="fin">
+
+
+   <label for="producto">Producto/Servicio:</label>
+    <select id="producto" name="producto">
+      <option value="SIGGO">SIGGO</option>
+      <option value="SIGGE">SIGGE</option>
+      <option value="SIGEDUKA">SIGEDUKA</option>
+      <option value="PAGINA WEB Y REDES SOCIALES">PAGINA WEB Y REDES SOCIALES</option>
+      <option value="EQUIPOS">EQUIPOS</option>
+      <option value="SERVICIOS VARIOS">SERVICIOS VARIOS</option>
+      <option value="SIGGO"></option>
+      <option value="Otro">Otro</option> <!-- Agregar la opción "Otro" -->
+    </select>
+  
+
+    <label for="institucion">Institución/Empresa/Otros:</label>
+    <select id="institucion" name="institucion" onchange="mostrarInput()">
+      
+      <option value="INDEPENDENCIA DISTRIBUCIONES S.A.C.">INDEPENDENCIA DISTRIBUCIONES S.A.C.</option>
+
+
+      <option value="Otro">Otro</option> <!-- Agregar la opción "Otro" -->
+    </select>
+    <br><br>
+    <input type="text" id="otraOpcion" name="otraOpcion" placeholder="Ingrese otra opción" style="display: none;">
+    <br><br>
+
+    <!-- Agregamos un campo para ingresar una nueva institución -->
+    <input type="text" id="otraInstitucion" name="otraInstitucion" placeholder="Ingrese otra institución" style="display: none;">
+
+    <label for="nombre">Nombre del cliente:</label>
+    <input type="text" id="nombre" name="nombre">
+    
+    <label for="atencion">Tipo de atención:</label>
+<input type="text" id="atencion" name="atencion" oninput="filtrarOpcionesAtencion(this.value)">
+<div id="opciones_sugeridas_atencion"></div>
+
+    <label for="detalle">Detalle/Observación - Especificar el problema:</label>
+    <textarea id="detalle" name="detalle" rows="4" cols="50"></textarea>
+
+    <label for="solucion">Solucion:</label>
+    <textarea id="solucion" name="solucion" rows="4" cols="50"></textarea>
+
+
+    <label for="estado">Estado:</label>
+    <select id="estado" name="estado" onchange="mostrarCuadroDerivado()">
+      <option value="Terminado">Terminado</option>
+      <option value="Derivado">Derivado</option>
+      <option value="En proceso">En proceso</option>
+    </select>
+
+    <div id="cuadroDerivado" style="display: none;">
+  <label for="personaDerivada">Persona a quien se derivará:</label>
+  <select id="personaDerivada" name="personaDerivada">
+    <option value="nadie">nadie</option>
+    <option value="01 MAMANI FLOREZ JOSSI ANAISE">01 MAMANI FLOREZ JOSSI ANAISE</option>
+    <option value="02 NAREZO HUARAHUARA CHRISTIAN EVERT">02 NAREZO HUARAHUARA CHRISTIAN EVERT</option>
+    <option value="03 PANUERA CRUZ JUAN CARLOS">03 PANUERA CRUZ JUAN CARLOS</option>
+    <option value="04 PANUERA CRUZ MIGUEL ANGEL">04 PANUERA CRUZ MIGUEL ANGEL</option>
+    <option value="05 ANTONIA RODRIGUEZ LORENA">05 ANTONIA RODRIGUEZ LORENA</option>
+    <option value="06 VALENCIA QUISPE BRAULIO PIERO">06 VALENCIA QUISPE BRAULIO PIERO</option>
+    <option value="07 RAMOS CHANCOLLA DIEGO LUIS">07 RAMOS CHANCOLLA DIEGO LUIS</option>
+    <option value="08 TITO DURAND ABEL ALEXIS">08 TITO DURAND ABEL ALEXIS</option>
+    <option value="09 SUELDO LAURA ANDREA NALDA">09 SUELDO LAURA ANDREA NALDA</option>
+    <option value="10 CHACO HUAMANI ALEX">10 CHACO HUAMANI ALEX</option>
+    <option value="11 SOSA TORRES NIKOL STHEFANI">11 SOSA TORRES NIKOL STHEFANI</option>
+    <option value="12 DURAND MANRIQUE ALVARO DEGO">12 DURAND MANRIQUE ALVARO DIEGO</option>
+    <option value="13 BALDARRAGO MEJIA DIANA JOSEIFINA">13 BALDARRAGO MEJIA DIANA JOSEFINA</option>
+    <option value="14 SAMUEL">14 SAMUEL</option>
+    <option value="15 ANGULO KEVIN">15 ANGULO KEVIN</option>
+    
+  </select>
+</div>
+
+
+    
+    <div class="form-group">
+    <input type="button" class="btn-enviar" value="Guardar" onclick="guardarDatos()">
+    </div>
+    
+    <!-- Agregamos un elemento para mostrar el código único generado -->
+    <div id="codigo"></div>
+  </form>
+
+  
+   <script>
+    // Función para guardar los datos y enviar correo
+    function guardarDatos() {
+        var colaborador = document.getElementById("colaborador").value;
+        var fecha = document.getElementById("fecha").value;
+        var inicio = document.getElementById("inicio").value;
+        var fin = document.getElementById("fin").value;
+        var producto = document.getElementById("producto").value;
+        var institucion = document.getElementById("institucion").value;
+        var otraOpcion = document.getElementById("otraOpcion").value.trim();
+        var nombre = document.getElementById("nombre").value;
+        var atencion = document.getElementById("atencion").value;
+        var detalle = document.getElementById("detalle").value;
+        var estado = document.getElementById("estado").value;
+        var personaDerivada = document.getElementById("personaDerivada").value;
+        var solucion = document.getElementById("solucion").value;
+
+        // Si se selecciona "Otro" en institución y se ingresa una opción personalizada, usar esa opción
+        if (institucion === "Otro" && otraOpcion !== "") {
+          institucion = otraOpcion;
+        }
+
+        // Llama a la función de Google Apps Script para guardar los datos
+          google.script.run.withSuccessHandler(limpiarCampos).guardarDatos(colaborador, fecha, inicio, fin, producto, institucion, nombre, atencion, detalle,solucion ,estado, personaDerivada);
+      }
+
+
+    // Función para enviar correo electrónico
+    function enviarCorreo(colaborador, email) {
+      // Aquí puedes usar la clase google.script.run para llamar a una función en tu script de Google Apps Script
+      // que envíe el correo electrónico utilizando la dirección de correo electrónico proporcionada
+      // Por ejemplo:
+      google.script.run.enviarCorreo(colaborador, email);
+    }
+
+
+    function mostrarInput() {
+            var opcionesSelect = document.getElementById("institucion");
+            var otraOpcionInput = document.getElementById("otraOpcion");
+
+            if (opcionesSelect.value === "Otro") {
+                otraOpcionInput.style.display = "block";
+            } else {
+                otraOpcionInput.style.display = "none";
+            }
+    }
+
+    function setFechaActual() {
+      var ahora = new Date();
+      var dia = ahora.getDate();
+      var mes = ahora.getMonth() + 1; // Sumamos 1 porque los meses se indexan desde 0
+      var anio = ahora.getFullYear();
+
+      // Formatear el día, el mes y el año como cadenas
+      var diaStr = dia < 10 ? '0' + dia : dia;
+      var mesStr = mes < 10 ? '0' + mes : mes;
+
+      // Establecer el valor del campo de entrada de fecha
+      document.getElementById('fecha').value = anio + '-' + mesStr + '-' + diaStr;
+  }
+
+
+  function mostrarCuadroDerivado() {
+    var estadoSelect = document.getElementById("estado");
+    var cuadroDerivado = document.getElementById("cuadroDerivado");
+    var personaDerivadaInput = document.getElementById("personaDerivada");
+
+    if (estadoSelect.value === "Derivado") {
+      cuadroDerivado.style.display = "block"; // Mostrar el cuadro de texto
+      personaDerivadaInput.required = true; // Hacer que el campo sea obligatorio
+    } else {
+      cuadroDerivado.style.display = "none"; // Ocultar el cuadro de texto
+      personaDerivadaInput.required = false; // Hacer que el campo no sea obligatorio
+    }
+  }
+
+
+
+
+
+var opcionesAtencion = ["Soporte / Apoyo - SOFTWARE", "Venta / Asesoramiento", "Servicio Técnico - HARDWARE", "Reclamo / Queja", "Otros"];
+
+function filtrarOpcionesAtencion(texto) {
+  var opcionesFiltradas = opcionesAtencion.filter(function(opcion) {
+    return opcion.toLowerCase().includes(texto.toLowerCase());
+  });
+
+  mostrarOpcionesSugeridasAtencion(opcionesFiltradas);
+}
+
+function mostrarOpcionesSugeridasAtencion(opciones) {
+  var opcionesSugeridasDiv = document.getElementById("opciones_sugeridas_atencion");
+  opcionesSugeridasDiv.innerHTML = ""; // Limpiar las opciones anteriores
+
+  opciones.forEach(function(opcion) {
+    var opcionElement = document.createElement("div");
+    opcionElement.textContent = opcion;
+    opcionElement.onclick = function() {
+      document.getElementById("atencion").value = opcion;
+      opcionesSugeridasDiv.innerHTML = ""; // Limpiar las opciones sugeridas después de seleccionar una
+    };
+    opcionesSugeridasDiv.appendChild(opcionElement);
+  });
+}
+
+
+
+
+ var opcionesColaborador = [
+          {nombre: "01 MAMANI FLOREZ JOSSI ANAISE", email: "alvarodurandiuvade@gmail.com"},
+          {nombre: "02 NAREZO HUARAHUARA CHRISTIAN EVERT", email: "alvarodurandiuvade@gmail.com"},
+          {nombre: "03 PANUERA CRUZ JUAN CARLOS", email: "alvarodurandiuvade@gmail.com"},
+          {nombre: "04 PANUERA CRUZ MIGUEL ANGEL", email: "alvarodurandiuvade@gmail.com"},
+          {nombre: "05 ANTONIA RODRIGUEZ LORENA", email: "alvarodurandiuvade@gmail.com"},
+          {nombre: "06 VALENCIA QUISPE BRAULIO PIERO", email: "alvarodurandiuvade@gmail.com"},
+          {nombre: "07 RAMOS CHANCOLLA DIEGO LUIS", email: "alvarodurandiuvade@gmail.com"},
+          {nombre: "08 TITO DURAND ABEL ALEXIS", email: "alvarodurandiuvade@gmail.com"},
+          {nombre: "09 SUELDO LAURA ANDREA NALDA", email: "alvarodurandiuvade@gmail.com"},
+          {nombre: "10 CHACO HUAMANI ALEX", email: "alvarodurandiuvade@gmail.com"},
+          {nombre: "11 SOSA TORRES NIKOL STHEFANI", email: "alvarodurandiuvade@gmail.com"},
+          {nombre: "12 DURAND MANRIQUE ALVARO DIEGO", email: "alvarodurandiuvade@gmail.com"},
+          {nombre: "13 BALDARRAGO MEJIA DIANA JOSEFINA", email: "alvarodurandiuvade@gmail.com"},
+          {nombre: "14 SAMUEL", email: "alvarodurandiuvade@gmail.com"},
+          {nombre: "15 ANGULO KEVIN", email: "alvarodurandiuvade@gmail.com"},
+      ];
+
+      function filtrarOpcionesColaborador(texto) {
+        var opcionesFiltradas = opcionesColaborador.filter(function(colaborador) {
+          return colaborador.nombre.toLowerCase().includes(texto.toLowerCase());
+        });
+
+        mostrarOpcionesSugeridasColaborador(opcionesFiltradas);
+      }
+
+      function mostrarOpcionesSugeridasColaborador(opciones) {
+        var opcionesSugeridasDiv = document.getElementById("opciones_sugeridas_colaborador");
+        opcionesSugeridasDiv.innerHTML = ""; // Limpiar las opciones anteriores
+
+        opciones.forEach(function(colaborador) {
+          var opcionElement = document.createElement("div");
+          opcionElement.textContent = colaborador.nombre;
+          opcionElement.onclick = function() {
+            document.getElementById("colaborador").value = colaborador.nombre;
+            // Si necesitas almacenar el correo electrónico, puedes hacerlo de la siguiente manera:
+            // document.getElementById("email_colaborador").value = colaborador.email;
+            opcionesSugeridasDiv.innerHTML = ""; // Limpiar las opciones sugeridas después de seleccionar una
+          };
+          opcionesSugeridasDiv.appendChild(opcionElement);
+        });
+      }
+
+      function limpiarCampos() {
+      document.getElementById('formulario').reset();
+      }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    function setHoraActual() {
+        var ahora = new Date();
+        var hora = ahora.getHours();
+        var minutos = ahora.getMinutes();
+
+        // Formatear la hora y los minutos como cadena
+        var horaStr = hora < 10 ? '0' + hora : hora;
+        var minutosStr = minutos < 10 ? '0' + minutos : minutos;
+
+        // Establecer el valor del campo de entrada de tiempo
+        document.getElementById('inicio').value = horaStr + ':' + minutosStr;
+}
+
+function cargarInstituciones() {
+    var productoSelect = document.getElementById("producto");
+    var institucionSelect = document.getElementById("institucion");
+    var producto = productoSelect.value;
+    // Definir las opciones de institución según el producto seleccionado
+    var opciones = {};
+    if (producto === "SIGGO") {
+      opciones = {
+        "ACHOMA (MUNICIPALIDAD DISTRITAL)": "ACHOMA (MUNICIPALIDAD DISTRITAL)",
+    "ACARI (MUNICIPALIDAD DISTRITAL)": "ACARI (MUNICIPALIDAD DISTRITAL)",
+    "ALCA (MUNICIPALIDAD DISTRITAL)": "ALCA (MUNICIPALIDAD DISTRITAL)",
+    "ANDAGUA (MUNICIPALIDAD DISTRITAL)": "ANDAGUA (MUNICIPALIDAD DISTRITAL)",
+    "ANDARAY (MUNICIPALIDAD DISTRITAL)": "ANDARAY (MUNICIPALIDAD DISTRITAL)",
+    "AREQUIPA (MUNICIPALIDAD PROVINCIAL)": "AREQUIPA (MUNICIPALIDAD PROVINCIAL)",
+    "AYO (MUNICIPALIDAD DISTRITAL)": "AYO (MUNICIPALIDAD DISTRITAL)",
+    "ATIQUIPA (MUNICIPALIDAD DISTRITAL)": "ATIQUIPA (MUNICIPALIDAD DISTRITAL)",
+    "ATICO (MUNICIPALIDAD DISTRITAL)": "ATICO (MUNICIPALIDAD DISTRITAL)",
+    "BELLA UNION (MUNICIPALIDAD DISTRITAL)": "BELLA UNION (MUNICIPALIDAD DISTRITAL)",
+    "CABANACONDE (MUNICIPALIDAD DISTRITAL)": "CABANACONDE (MUNICIPALIDAD DISTRITAL)",
+    "CAYARANI (MUNICIPALIDAD DISTRITAL)": "CAYARANI (MUNICIPALIDAD DISTRITAL)",
+    "CAYLLOMA (MUNICIPALIDAD DISTRITAL)": "CAYLLOMA (MUNICIPALIDAD DISTRITAL)",
+    "CAYLLOMA - CHIVAY (MUNICIPALIDAD PROVINCIAL)": "CAYLLOMA - CHIVAY (MUNICIPALIDAD PROVINCIAL)",
+    "CHARCANA (MUNICIPALIDAD DISTRITAL)": "CHARCANA (MUNICIPALIDAD DISTRITAL)",
+    "CHARACATO (MUNICIPALIDAD DISTRITAL)": "CHARACATO (MUNICIPALIDAD DISTRITAL)",
+    "CHALA (MUNICIPALIDAD DISTRITAL)": "CHALA (MUNICIPALIDAD DISTRITAL)",
+    "CHAPARRA (MUNICIPALIDAD DISTRITAL)": "CHAPARRA (MUNICIPALIDAD DISTRITAL)",
+    "CHIGUATA (MUNICIPALIDAD DISTRITAL)": "CHIGUATA (MUNICIPALIDAD DISTRITAL)",
+    "CHILCAYMARCA (MUNICIPALIDAD DISTRITAL)": "CHILCAYMARCA (MUNICIPALIDAD DISTRITAL)",
+    "CHOCO (MUNICIPALIDAD DISTRITAL)": "CHOCO (MUNICIPALIDAD DISTRITAL)",
+    "CHUQUIBAMBA (MUNICIPALIDAD PROVINCIAL)": "CHUQUIBAMBA (MUNICIPALIDAD PROVINCIAL)",
+    "COCACHACRA (MUNICIPALIDAD DISTRITAL)": "COCACHACRA (MUNICIPALIDAD DISTRITAL)",
+    "COTAHUASI (MUNICIPALIDAD PROVINCIAL)": "COTAHUASI (MUNICIPALIDAD PROVINCIAL)",
+    "DEAN VALDIVIA (MUNICIPALIDAD DISTRITAL)": "DEAN VALDIVIA (MUNICIPALIDAD DISTRITAL)",
+    "HUANCA (MUNICIPALIDAD DISTRITAL)": "HUANCA (MUNICIPALIDAD DISTRITAL)",
+    "HUAMBO (MUNICIPALIDAD DISTRITAL)": "HUAMBO (MUNICIPALIDAD DISTRITAL)",
+    "HUANUHUANU (MUNICIPALIDAD DISTRITAL)": "HUANUHUANU (MUNICIPALIDAD DISTRITAL)",
+    "HUAYNACOTAS (MUNICIPALIDAD DISTRITAL)": "HUAYNACOTAS (MUNICIPALIDAD DISTRITAL)",
+    "ICHUPAMPA (MUNICIPALIDAD DISTRITAL)": "ICHUPAMPA (MUNICIPALIDAD DISTRITAL)",
+    "IRAY (MUNICIPALIDAD DISTRITAL)": "IRAY (MUNICIPALIDAD DISTRITAL)",
+    "ISLAY (MUNICIPALIDAD DISTRITAL)": "ISLAY (MUNICIPALIDAD DISTRITAL)",
+    "JAQUI (MUNICIPALIDAD DISTRITAL)": "JAQUI (MUNICIPALIDAD DISTRITAL)",
+    "JACOBO HUNTER (MUNICIPALIDAD DISTRITAL)": "JACOBO HUNTER (MUNICIPALIDAD DISTRITAL)",
+    "JOSE LUIS BUSTAMANTE Y RIVERO (MUNICIPALIDAD DISTRITAL)": "JOSE LUIS BUSTAMANTE Y RIVERO (MUNICIPALIDAD DISTRITAL)",
+    "JOSE MARIA QUIMPER (MUNICIPALIDAD DISTRITAL)": "JOSE MARIA QUIMPER (MUNICIPALIDAD DISTRITAL)",
+    "LA JOYA (MUNICIPALIDAD DISTRITAL)": "LA JOYA (MUNICIPALIDAD DISTRITAL)",
+    "LARI (MUNICIPALIDAD DISTRITAL)": "LARI (MUNICIPALIDAD DISTRITAL)",
+    "LLUTA (MUNICIPALIDAD DISTRITAL)": "LLUTA (MUNICIPALIDAD DISTRITAL)",
+    "LOMAS (MUNICIPALIDAD DISTRITAL)": "LOMAS (MUNICIPALIDAD DISTRITAL)",
+    "MACA (MUNICIPALIDAD DISTRITAL)": "MACA (MUNICIPALIDAD DISTRITAL)",
+    "MACHAGUAY (MUNICIPALIDAD DISTRITAL)": "MACHAGUAY (MUNICIPALIDAD DISTRITAL)",
+    "MAJES (MUNICIPALIDAD DISTRITAL)": "MAJES (MUNICIPALIDAD DISTRITAL)",
+    "MADRIGAL (MUNICIPALIDAD DISTRITAL)": "MADRIGAL (MUNICIPALIDAD DISTRITAL)",
+    "MARIA (MUNICIPALIDAD DISTRITAL)": "MARIA (MUNICIPALIDAD DISTRITAL)",
+    "MARISCAL CACERES (MUNICIPALIDAD DISTRITAL)": "MARISCAL CACERES (MUNICIPALIDAD DISTRITAL)",
+    "MARIANO MELGAR (MUNICIPALIDAD DISTRITAL)": "MARIANO MELGAR (MUNICIPALIDAD DISTRITAL)",
+    "MARIANO NICOLAS VALCARCEL (MUNICIPALIDAD DISTRITAL)": "MARIANO NICOLAS VALCARCEL (MUNICIPALIDAD DISTRITAL)",
+    "MEJIA (MUNICIPALIDAD DISTRITAL)": "MEJIA (MUNICIPALIDAD DISTRITAL)",
+    "MIRAFLORES (MUNICIPALIDAD DISTRITAL)": "MIRAFLORES (MUNICIPALIDAD DISTRITAL)",
+    "MOLLEBAYA (MUNICIPALIDAD DISTRITAL)": "MOLLEBAYA (MUNICIPALIDAD DISTRITAL)",
+    "MOLLENDO (MUNICIPALIDAD PROVINCIAL)": "MOLLENDO (MUNICIPALIDAD PROVINCIAL)",
+    "OCOÑA (MUNICIPALIDAD DISTRITAL)": "OCOÑA (MUNICIPALIDAD DISTRITAL)",
+    "ORCOPAMPA (MUNICIPALIDAD DISTRITAL)": "ORCOPAMPA (MUNICIPALIDAD DISTRITAL)",
+    "PACHACUTEC (MUNICIPALIDAD DISTRITAL)": "PACHACUTEC (MUNICIPALIDAD DISTRITAL)",
+    "PACO (MUNICIPALIDAD DISTRITAL)": "PACO (MUNICIPALIDAD DISTRITAL)",
+    "PAMPACOLCA (MUNICIPALIDAD DISTRITAL)": "PAMPACOLCA (MUNICIPALIDAD DISTRITAL)",
+    "PAMPAMARCA (MUNICIPALIDAD DISTRITAL)": "PAMPAMARCA (MUNICIPALIDAD DISTRITAL)",
+    "PAUCARPATA (MUNICIPALIDAD DISTRITAL)": "PAUCARPATA (MUNICIPALIDAD DISTRITAL)",
+    "POCSI (MUNICIPALIDAD DISTRITAL)": "POCSI (MUNICIPALIDAD DISTRITAL)",
+    "POLOBAYA (MUNICIPALIDAD DISTRITAL)": "POLOBAYA (MUNICIPALIDAD DISTRITAL)",
+    "PUNTA DE BOMBON (MUNICIPALIDAD DISTRITAL)": "PUNTA DE BOMBON (MUNICIPALIDAD DISTRITAL)",
+    "PUYCA (MUNICIPALIDAD DISTRITAL)": "PUYCA (MUNICIPALIDAD DISTRITAL)",
+    "QUECHUALLA (MUNICIPALIDAD DISTRITAL)": "QUECHUALLA (MUNICIPALIDAD DISTRITAL)",
+    "QUEQUE¥A (MUNICIPALIDAD DISTRITAL)": "QUEQUE¥A (MUNICIPALIDAD DISTRITAL)",
+    "QUICACHA (MUNICIPALIDAD DISTRITAL)": "QUICACHA (MUNICIPALIDAD DISTRITAL)",
+    "QUILCA (MUNICIPALIDAD DISTRITAL)": "QUILCA (MUNICIPALIDAD DISTRITAL)",
+    "RIO GRANDE (MUNICIPALIDAD DISTRITAL)": "RIO GRANDE (MUNICIPALIDAD DISTRITAL)",
+    "SABANDIA (MUNICIPALIDAD DISTRITAL)": "SABANDIA (MUNICIPALIDAD DISTRITAL)",
+    "SALAMANCA (MUNICIPALIDAD DISTRITAL)": "SALAMANCA (MUNICIPALIDAD DISTRITAL)",
+    "SAMUEL PASTOR (MUNICIPALIDAD DISTRITAL)": "SAMUEL PASTOR (MUNICIPALIDAD DISTRITAL)",
+    "SAN ANTONIO DE CHUCA (MUNICIPALIDAD DISTRITAL)": "SAN ANTONIO DE CHUCA (MUNICIPALIDAD DISTRITAL)",
+    "SAN JUAN DE SIGUAS (MUNICIPALIDAD DISTRITAL)": "SAN JUAN DE SIGUAS (MUNICIPALIDAD DISTRITAL)",
+    "SAN JUAN DE TARUCANI (MUNICIPALIDAD DISTRITAL)": "SAN JUAN DE TARUCANI (MUNICIPALIDAD DISTRITAL)",
+    "SANTA ISABEL DE SIGUAS (MUNICIPALIDAD DISTRITAL)": "SANTA ISABEL DE SIGUAS (MUNICIPALIDAD DISTRITAL)",
+    "SANTA RITA DE SIGUAS (MUNICIPALIDAD DISTRITAL)": "SANTA RITA DE SIGUAS (MUNICIPALIDAD DISTRITAL)",
+    "SAYLA (MUNICIPALIDAD DISTRITAL)": "SAYLA (MUNICIPALIDAD DISTRITAL)",
+    "SIBAYO (MUNICIPALIDAD DISTRITAL)": "SIBAYO (MUNICIPALIDAD DISTRITAL)",
+    "SOCABAYA (MUNICIPALIDAD DISTRITAL)": "SOCABAYA (MUNICIPALIDAD DISTRITAL)",
+    "TAURIA (MUNICIPALIDAD DISTRITAL)": "TAURIA (MUNICIPALIDAD DISTRITAL)",
+    "TAPAY (MUNICIPALIDAD DISTRITAL)": "TAPAY (MUNICIPALIDAD DISTRITAL)",
+    "TIABAYA (MUNICIPALIDAD DISTRITAL)": "TIABAYA (MUNICIPALIDAD DISTRITAL)",
+    "TISCO (MUNICIPALIDAD DISTRITAL)": "TISCO (MUNICIPALIDAD DISTRITAL)",
+    "TOMEPAMPA (MUNICIPALIDAD DISTRITAL)": "TOMEPAMPA (MUNICIPALIDAD DISTRITAL)",
+    "TORO (MUNICIPALIDAD DISTRITAL)": "TORO (MUNICIPALIDAD DISTRITAL)",
+    "TUTI (MUNICIPALIDAD DISTRITAL)": "TUTI (MUNICIPALIDAD DISTRITAL)",
+    "UÑON (MUNICIPALIDAD DISTRITAL)": "UÑON (MUNICIPALIDAD DISTRITAL)",
+    "URACA (MUNICIPALIDAD DISTRITAL)": "URACA (MUNICIPALIDAD DISTRITAL)",
+    "VIRACO (MUNICIPALIDAD DISTRITAL)": "VIRACO (MUNICIPALIDAD DISTRITAL)",
+    "VITOR (MUNICIPALIDAD DISTRITAL)": "VITOR (MUNICIPALIDAD DISTRITAL)",
+    "YANAHUARA (MUNICIPALIDAD DISTRITAL)": "YANAHUARA (MUNICIPALIDAD DISTRITAL)",
+    "YANQUE (MUNICIPALIDAD DISTRITAL)": "YANQUE (MUNICIPALIDAD DISTRITAL)",
+    "YARA (MUNICIPALIDAD DISTRITAL)": "YARA (MUNICIPALIDAD DISTRITAL)",
+    "YARABAMBA (MUNICIPALIDAD DISTRITAL)": "YARABAMBA (MUNICIPALIDAD DISTRITAL)",
+    "YURA (MUNICIPALIDAD DISTRITAL)": "YURA (MUNICIPALIDAD DISTRITAL)",
+    "YANAQUIHUA (MUNICIPALIDAD DISTRITAL)": "YANAQUIHUA (MUNICIPALIDAD DISTRITAL)",
+    "YAUCA (MUNICIPALIDAD DISTRITAL)": "YAUCA (MUNICIPALIDAD DISTRITAL)",
+
+      };
+    } 
+    
+    else if (producto === "SIGGE") {
+      opciones = {
+        "A & P CASA DEL MECANICO E.I.R.L. || 20602170943 ||" : "A & P CASA DEL MECANICO E.I.R.L. || 20602170943 ||",
+        "A'IRON MOTORS E.I.R.L. || 20612314790 ||" : "A'IRON MOTORS E.I.R.L. || 20612314790 ||",
+        "ACABADOS CASA BELLA M & A E.I.R.L. || 20607322598 ||" : "ACABADOS CASA BELLA M & A E.I.R.L. || 20607322598 ||",
+        "AGRO TIERRA VID S.A.C. || 20611762543 ||" : "AGRO TIERRA VID S.A.C. || 20611762543 ||",
+        "AGROIMPULSO SOCIEDAD ANONIMA CERRADA || 20454325215 ||" : "AGROIMPULSO SOCIEDAD ANONIMA CERRADA || 20454325215 ||",
+        "AGROINDUSTRIAS MARSA S.R.L. || 20455631620 ||" : "AGROINDUSTRIAS MARSA S.R.L. || 20455631620 ||",
+        "AGROINVERSIONES SIEMPRE VERDE E.I.R.L. || 20608345729 ||" : "AGROINVERSIONES SIEMPRE VERDE E.I.R.L. || 20608345729 ||",
+        "AGUEDO FLORES ALEXANDER MARIO || 10410162259 ||" : "AGUEDO FLORES ALEXANDER MARIO || 10410162259 ||",
+        "AGUILAR CACERES YULIANA IVONNE (RESTAURANTE SARYRIS) || 10404583374 ||" : "AGUILAR CACERES YULIANA IVONNE (RESTAURANTE SARYRIS) || 10404583374 ||",
+        "AIME GALLEGOS ELOY GERMAN (FULL INYECCION) || 10417788871 ||" : "AIME GALLEGOS ELOY GERMAN (FULL INYECCION) || 10417788871 ||",
+        "ALVAROS REPRESENTACIONES E.I.R.L. || 20498659617 ||" : "ALVAROS REPRESENTACIONES E.I.R.L. || 20498659617 ||",
+        "AMAR SILVA SANTIAGO(PLASTICOS AMAR) || 10293999550 ||" : "AMAR SILVA SANTIAGO(PLASTICOS AMAR) || 10293999550 ||",
+        "AMAZONIC FOODS SOCIEDAD ANONIMA CERRADA || 20601327148 ||" : "AMAZONIC FOODS SOCIEDAD ANONIMA CERRADA || 20601327148 ||",
+        "AMERICA TOURS & RECEPCIONES S.A.C || 20608881515 ||" : "AMERICA TOURS & RECEPCIONES S.A.C || 20608881515 ||",
+        "AMERICAN TOURIST SERVICES S.A.C (HOTEL FUNDADOR) || 20454267690 ||" : "AMERICAN TOURIST SERVICES S.A.C (HOTEL FUNDADOR) || 20454267690 ||",
+        "AMESQUITA MORA ANA CECILIA (POLLERIA CROQUEN CHIQUEN) || 10295170854 ||" : "AMESQUITA MORA ANA CECILIA (POLLERIA CROQUEN CHIQUEN) || 10295170854 ||",
+        "APAZA ACERO ANTONIA FRANCISCA (MUEBLERIA FRANCHESCA) || 10296866011 ||" : "APAZA ACERO ANTONIA FRANCISCA (MUEBLERIA FRANCHESCA) || 10296866011 ||",
+        "APAZA BEJAR JOSE AUGUSTO (OPEN TIENDA) || 10296683693 ||" : "APAZA BEJAR JOSE AUGUSTO (OPEN TIENDA) || 10296683693 ||",
+        "APAZA BEJAR JOSE AUGUSTO (OPEN TIENDA) || 10296683693 ||" : "APAZA BEJAR JOSE AUGUSTO (OPEN TIENDA) || 10296683693 ||",
+        "APAZA CHAQUILLA ECLER JOEL (AIRON MOTORS) || 10709812691 ||" : "APAZA CHAQUILLA ECLER JOEL (AIRON MOTORS) || 10709812691 ||",
+        "AQP CASA DEL MECANICO E.I.R.L. || 20608376233 ||" : "AQP CASA DEL MECANICO E.I.R.L. || 20608376233 ||",
+        "AQP KOLPING S.R.L. || 20609584468 ||" : "AQP KOLPING S.R.L. || 20609584468 ||",
+        "ARAJOR S.R.L. || 20600299451 ||" : "ARAJOR S.R.L. || 20600299451 ||",
+        "AROCUTIPA URURI WILBER (AUTOPARTES WILLYSCARS) || 10706061776 ||" : "AROCUTIPA URURI WILBER (AUTOPARTES WILLYSCARS) || 10706061776 ||",
+        "ASTORIA 1950 AQP E.I.R.L. || 20455982414 ||" : "ASTORIA 1950 AQP E.I.R.L. || 20455982414 ||",
+        "AUTOMOTRIZ NIKKO E.I.R.L || 20455631034 ||" : "AUTOMOTRIZ NIKKO E.I.R.L || 20455631034 ||",
+        "AUTOMOTRIZ PANCHITO E.I.R.L. || 20455483507 ||" : "AUTOMOTRIZ PANCHITO E.I.R.L. || 20455483507 ||",
+        "AUTORAMA E.I.R.LTDA. || 20223602992 ||" : "AUTORAMA E.I.R.LTDA. || 20223602992 ||",
+        "AYZCORBE THERAN DE DELGADO ROSSEMARY MERCEDES || 10297308764 ||" : "AYZCORBE THERAN DE DELGADO ROSSEMARY MERCEDES || 10297308764 ||",
+        "AYZCORBE THERAN JORGE LUIS (CEVICHERIA JKUNA) || 10309637157 ||" : "AYZCORBE THERAN JORGE LUIS (CEVICHERIA JKUNA) || 10309637157 ||",
+        "BERNAL TORRES ROSE MARY CARMEN || 44203790 ||" : "BERNAL TORRES ROSE MARY CARMEN || 44203790 ||",
+        "BOLIVAR HUACHACA DELCY ANETT || 10453504862 ||" : "BOLIVAR HUACHACA DELCY ANETT || 10453504862 ||",
+        "C Y S PUMA E.I.R.L. || 20498595465 ||" : "C Y S PUMA E.I.R.L. || 20498595465 ||",
+        "C.E.G.N.E. WILLIAM MORRIS || 20159553419 ||" : "C.E.G.N.E. WILLIAM MORRIS || 20159553419 ||",
+        "CADENAS DIAZ HELEM MAGALID LUZ || 10432637153 ||" : "CADENAS DIAZ HELEM MAGALID LUZ || 10432637153 ||",
+        "CAMDAY DISTRIBUCIONES E.I.R.L. || 20539376081 ||" : "CAMDAY DISTRIBUCIONES E.I.R.L. || 20539376081 ||",
+        "CASA DE AMORTIGUADORES FULL SUSPENSION E.I.R.L. || 20455643121 ||" : "CASA DE AMORTIGUADORES FULL SUSPENSION E.I.R.L. || 20455643121 ||",
+        "CASA DE AMORTIGUADORES GLOBAL E.I.R.L. || 20610766791 ||" : "CASA DE AMORTIGUADORES GLOBAL E.I.R.L. || 20610766791 ||",
+        "CCASA CAYA KATHERINE FLOR (CETPRO SILVIA) || 10442580362 ||" : "CCASA CAYA KATHERINE FLOR (CETPRO SILVIA) || 10442580362 ||",
+        "CELIA SANALEA REAÑO E.I.R.L.         || 20611554932 ||" : "CELIA SANALEA REAÑO E.I.R.L.         || 20611554932 ||",
+        "CHAIÑA ALIAGA JULIO CESAR || 10411272627 ||" : "CHAIÑA ALIAGA JULIO CESAR || 10411272627 ||",
+        "CHAIÑA MAMANI ELEUTERIO || 10294651751 ||" : "CHAIÑA MAMANI ELEUTERIO || 10294651751 ||",
+        "CHAMBI QUISPE VICENTE (RESTAURANTE DALMACIA) || 10292130797 ||" : "CHAMBI QUISPE VICENTE (RESTAURANTE DALMACIA) || 10292130797 ||",
+        "CHAQUILLA SONCCO HILDA (PHARIS MOTORS) || 10419634293 ||" : "CHAQUILLA SONCCO HILDA (PHARIS MOTORS) || 10419634293 ||",
+        "CHECA PARISACA FRANCESCO LUIGI (FRANSUGAS) || 10469693461 ||" : "CHECA PARISACA FRANCESCO LUIGI (FRANSUGAS) || 10469693461 ||",
+        "COMERCIAL DIANA CAROLINA S.R.L. || 20453920233 ||" : "COMERCIAL DIANA CAROLINA S.R.L. || 20453920233 ||",
+        "COMERCIAL J & V PERU E.I.R.L. || 20608218042 ||" : "COMERCIAL J & V PERU E.I.R.L. || 20608218042 ||",
+        "COMERCIAL SIDERURGICA DEL SUR E.I.R.L. - COMSISUR E.I.R.L. || 20601191483 ||" : "COMERCIAL SIDERURGICA DEL SUR E.I.R.L. - COMSISUR E.I.R.L. || 20601191483 ||",
+        "COMERCIAL VERO JVC E.I.R.L. || 20456272330 ||" : "COMERCIAL VERO JVC E.I.R.L. || 20456272330 ||",
+        "CONDORI QUISPE NORMA || 10465466087 ||" : "CONDORI QUISPE NORMA || 10465466087 ||",
+        "CONSORCIO COMERCIAL RECORD S.R.L. || 20558137950 ||" : "CONSORCIO COMERCIAL RECORD S.R.L. || 20558137950 ||",
+        "CORNEJO CACERES HENRRY JAIME (FERRETERIA CORNEJO) || 10062921728 ||" : "CORNEJO CACERES HENRRY JAIME (FERRETERIA CORNEJO) || 10062921728 ||",
+        "CORPORACION ALVARO S DEL PERU S.R.L. || 20611186313 ||" : "CORPORACION ALVARO S DEL PERU S.R.L. || 20611186313 ||",
+        "COYLA VALENCIA MARY MAGDA (AVICOLA DON CARLITOS) || 10293419952 ||" : "COYLA VALENCIA MARY MAGDA (AVICOLA DON CARLITOS) || 10293419952 ||",
+        "CUTI VILCA ROLANDO ISAURO (FERRETERIA MANUEL) || 10427273143 ||" : "CUTI VILCA ROLANDO ISAURO (FERRETERIA MANUEL) || 10427273143 ||",
+        "CVS INVERSIONISTAS S.A.C (CAÑERIA) || 20602837417 ||" : "CVS INVERSIONISTAS S.A.C (CAÑERIA) || 20602837417 ||",
+        "CYBER SIGNAL NETWORKS S.A.C. || 20608266462 ||" : "CYBER SIGNAL NETWORKS S.A.C. || 20608266462 ||",
+        "DALMACIA RESTAURANT E.I.R.L || 20609773741 ||" : "DALMACIA RESTAURANT E.I.R.L || 20609773741 ||",
+        "DILCIMPORT S.R.L. || 20272335461 ||" : "DILCIMPORT S.R.L. || 20272335461 ||",
+        "DIMAS FRENOS Y EMBRAGUES E.I.R.L. || 20611266571 ||" : "DIMAS FRENOS Y EMBRAGUES E.I.R.L. || 20611266571 ||",
+        "DISTRIBUIDORA COMERCIAL VELARDE SOCIEDAD COMERCIAL DE RESPONSABILIDAD LIMITADA || 20454062371 ||" : "DISTRIBUIDORA COMERCIAL VELARDE SOCIEDAD COMERCIAL DE RESPONSABILIDAD LIMITADA || 20454062371 ||",
+        "DISTRIBUIDORA JBG E.I.R.L. || 20602537251 ||" : "DISTRIBUIDORA JBG E.I.R.L. || 20602537251 ||",
+        "DISTRIBUIDORA PAOLAS DEL SUR E.I.R.L. || 20605171720 ||" : "DISTRIBUIDORA PAOLAS DEL SUR E.I.R.L. || 20605171720 ||",
+        "DISTRIBUIDORA TEMEFE E.I.R.L. || 20610301127 ||" : "DISTRIBUIDORA TEMEFE E.I.R.L. || 20610301127 ||",
+        "ECKOFRUT AQP E.I.R.L. || 20601303435 ||" : "ECKOFRUT AQP E.I.R.L. || 20601303435 ||",
+        "ECO BOX PACKING S.R.L. || 20607532002 ||" : "ECO BOX PACKING S.R.L. || 20607532002 ||",
+        "EL FUNDO DE AREQUIPA S.R.L. || 20455750556 ||" : "EL FUNDO DE AREQUIPA S.R.L. || 20455750556 ||",
+        "EMILTEX CONFECCIONES E.I.R.L. || 20609640554 ||" : "EMILTEX CONFECCIONES E.I.R.L. || 20609640554 ||",
+        "EMPRESA || RUC ||" : "EMPRESA || RUC ||",
+        "EMPRESA DE TRANSPORTE RAPIDO VIP S.A.C. || 20559330818 ||" : "EMPRESA DE TRANSPORTE RAPIDO VIP S.A.C. || 20559330818 ||",
+        "EMPRESA DE TRANSPORTES IMPORTACION Y EXPORTACION GRUPO RIVEROS S.A.C ||  ||" : "EMPRESA DE TRANSPORTES IMPORTACION Y EXPORTACION GRUPO RIVEROS S.A.C ||  ||",
+        "EMPRESA ISF GLOBAL SAC || 20605949381 ||" : "EMPRESA ISF GLOBAL SAC || 20605949381 ||",
+        "ENCANTOS S.R.L. || 20454387911 ||" : "ENCANTOS S.R.L. || 20454387911 ||",
+        "EVENTOS Y PRODUCCIONES STELLA S.A.C. || 20601008671 ||" : "EVENTOS Y PRODUCCIONES STELLA S.A.C. || 20601008671 ||",
+        "FAMIMOTORS SERVICIOS GENERALES S.A.C. || 20602317090 ||" : "FAMIMOTORS SERVICIOS GENERALES S.A.C. || 20602317090 ||",
+        "FARBA S.A. || 20496488637 ||" : "FARBA S.A. || 20496488637 ||",
+        "FARFAN ENCALADA MARIA ENGRACIA (SERVICIOS E INVERSIONES JAREMS) || 10314208370 ||" : "FARFAN ENCALADA MARIA ENGRACIA (SERVICIOS E INVERSIONES JAREMS) || 10314208370 ||",
+        "FERRETERIA MATERIALES DE CONSTRUCCION HNOS. CCAHUANA EIRL || 20606803941 ||" : "FERRETERIA MATERIALES DE CONSTRUCCION HNOS. CCAHUANA EIRL || 20606803941 ||",
+        "FLORES CHANCOLLA MISTER CESAR (EL MUNDO DE LAS MICAS) || 10414618737 ||" : "FLORES CHANCOLLA MISTER CESAR (EL MUNDO DE LAS MICAS) || 10414618737 ||",
+        "FLORES SONCO ABEL (AUTOPARTESCIA) || 10707469833 ||" : "FLORES SONCO ABEL (AUTOPARTESCIA) || 10707469833 ||",
+        "FRE WAGENMOTORS S.R.L. || 20497979821 ||" : "FRE WAGENMOTORS S.R.L. || 20497979821 ||",
+        "FRENOS PAUCAR & SERVICIOS SAC || 20542627108 ||" : "FRENOS PAUCAR & SERVICIOS SAC || 20542627108 ||",
+        "FRENOS PAUCAR E.I.R.L. || 20406435751 ||" : "FRENOS PAUCAR E.I.R.L. || 20406435751 ||",
+        "FULL REPUESTOS JHON E.I.R.L. || 20611705469 ||" : "FULL REPUESTOS JHON E.I.R.L. || 20611705469 ||",
+        "G Y P LUE S.A.C. || 20603301812 ||" : "G Y P LUE S.A.C. || 20603301812 ||",
+        "GARCIA ALVAREZ VICTOR SIMON || 10255697141 ||" : "GARCIA ALVAREZ VICTOR SIMON || 10255697141 ||",
+        "GMYS CARCOLORS E.I.R.L. || 20455679746 ||" : "GMYS CARCOLORS E.I.R.L. || 20455679746 ||",
+        "GRIFO EL PEDREGAL S.R.L. || 20327007646 ||" : "GRIFO EL PEDREGAL S.R.L. || 20327007646 ||",
+        "GRIFO GEMINIS S.R.L. || 20453868304 ||" : "GRIFO GEMINIS S.R.L. || 20453868304 ||",
+        "GRUPO CADYPLAS E.I.R.L. || 20608633252 ||" : "GRUPO CADYPLAS E.I.R.L. || 20608633252 ||",
+        "GRUPO HOGAR BARUCH S.R.L. || 20610234829 ||" : "GRUPO HOGAR BARUCH S.R.L. || 20610234829 ||",
+        "GRUPO REKELY S.R.L. || 20455656614 ||" : "GRUPO REKELY S.R.L. || 20455656614 ||",
+        "GUTIERREZ RIVERA JAVIER ALFREDO (GTR) || 10708104511 ||" : "GUTIERREZ RIVERA JAVIER ALFREDO (GTR) || 10708104511 ||",
+        "HERRAMIENTAS MINERAS S.R.L. || 20455576181 ||" : "HERRAMIENTAS MINERAS S.R.L. || 20455576181 ||",
+        "HERRERA AGUILAR CARLA ABELINA || 10763548525 ||" : "HERRERA AGUILAR CARLA ABELINA || 10763548525 ||",
+        "HUAMAN SONCCO EDITH (NIPLESUR) || 10457503712 ||" : "HUAMAN SONCCO EDITH (NIPLESUR) || 10457503712 ||",
+        "HUANCA DE MEZA GRACIELA (ESTAC.DE SERVICIOS SAN ANTONIO) || 10294568871 ||" : "HUANCA DE MEZA GRACIELA (ESTAC.DE SERVICIOS SAN ANTONIO) || 10294568871 ||",
+        "HYD IDEAS AQP E.I.R.L. || 20607917907 ||" : "HYD IDEAS AQP E.I.R.L. || 20607917907 ||",
+        "I.E.P. SANTA TERESITA DE LISIEUX || 20125080694 ||" : "I.E.P. SANTA TERESITA DE LISIEUX || 20125080694 ||",
+        "IMPORTACION MASTER MUSIC S.A.C. || 20609719983 ||" : "IMPORTACION MASTER MUSIC S.A.C. || 20609719983 ||",
+        "IMPORTACION Y EXPORTACION GRUPO RIVEROS S.A.C. SERIE 1 || 20455502650 ||" : "IMPORTACION Y EXPORTACION GRUPO RIVEROS S.A.C. SERIE 1 || 20455502650 ||",
+        "IMPORTACION Y EXPORTACION GRUPO RIVEROS S.A.C. SERIE 3 ||  ||" : "IMPORTACION Y EXPORTACION GRUPO RIVEROS S.A.C. SERIE 3 ||  ||",
+        "IMPORTACIONES DON LOLO PARILLO SUPO EIRL || 20607891762 ||" : "IMPORTACIONES DON LOLO PARILLO SUPO EIRL || 20607891762 ||",
+        "IMPORTACIONES MISTI E.I.R.L. || 20601633567 ||" : "IMPORTACIONES MISTI E.I.R.L. || 20601633567 ||",
+        "IMPORTACIONES Y EXPORTACIONES SEÑOR DE COYLLORRITI SOCIEDAD ANONIMA CERRADA         || 20601417368 ||" : "IMPORTACIONES Y EXPORTACIONES SEÑOR DE COYLLORRITI SOCIEDAD ANONIMA CERRADA         || 20601417368 ||",
+        "IMPORTADORA Y COMERCIALIZADORA MAYHELY E.I.R.L. || 20609212650 ||" : "IMPORTADORA Y COMERCIALIZADORA MAYHELY E.I.R.L. || 20609212650 ||",
+        "INDEPENDENCIA DISTRIBUCIONES S.A.C. || 20454094655 ||" : "INDEPENDENCIA DISTRIBUCIONES S.A.C. || 20454094655 ||",
+        "INDUSTRIA TEXTIL ATLAS E.I.R.L. || 20453869882 ||" : "INDUSTRIA TEXTIL ATLAS E.I.R.L. || 20453869882 ||",
+        "INNOVACION AUTOMOTRIZ E.I.R.L. || 20608790617 ||" : "INNOVACION AUTOMOTRIZ E.I.R.L. || 20608790617 ||",
+        "INSTITUTO DE EDUCACION SUPERIOR PRIVADO E.F. E.I.R.L. - I.E.S.P. E.F. E.I.R.L. || 20603758707 ||" : "INSTITUTO DE EDUCACION SUPERIOR PRIVADO E.F. E.I.R.L. - I.E.S.P. E.F. E.I.R.L. || 20603758707 ||",
+        "INVERSIONES TURISTICAS POZO DEL CIELO SAC. || 20498578617 ||" : "INVERSIONES TURISTICAS POZO DEL CIELO SAC. || 20498578617 ||",
+        "INVERSIONES VOLENA E.I.R.L. || 20609571846 ||" : "INVERSIONES VOLENA E.I.R.L. || 20609571846 ||",
+        "IUVADE S.R.L. || 20456160451 ||" : "IUVADE S.R.L. || 20456160451 ||",
+        "IUVADESOFT S.R.L. || 20610480382 ||" : "IUVADESOFT S.R.L. || 20610480382 ||",
+        "JACHO CHAMBI JUANA FRANCISCA (CASA DE FRENOS Y EMBRAGUES) || 10708471131 ||" : "JACHO CHAMBI JUANA FRANCISCA (CASA DE FRENOS Y EMBRAGUES) || 10708471131 ||",
+        "JAQUEHUA PARI MARIA ISABEL (EMPORIO KATTY) || 10294425981 ||" : "JAQUEHUA PARI MARIA ISABEL (EMPORIO KATTY) || 10294425981 ||",
+        "JAYARI EMPRESARIAL E.I.R.L. || 20608586017 ||" : "JAYARI EMPRESARIAL E.I.R.L. || 20608586017 ||",
+        "JOMAX AUTOMOTRIZ E.I.R.L. || 20558321378 ||" : "JOMAX AUTOMOTRIZ E.I.R.L. || 20558321378 ||",
+        "JOSE ARMANDO CRUZ PINARES || 10770681575 ||" : "JOSE ARMANDO CRUZ PINARES || 10770681575 ||",
+        "JULCA GUILLERMO LOLIN ROLANDO (REPUESTOS LALO) || 10101579692 ||" : "JULCA GUILLERMO LOLIN ROLANDO (REPUESTOS LALO) || 10101579692 ||",
+        "KIARA MOTORS E.I.R.L. || 20609042339 ||" : "KIARA MOTORS E.I.R.L. || 20609042339 ||",
+        "LA CASA DE LOS FAROS Y MICAS E.I.R.L. || 20559330737 ||" : "LA CASA DE LOS FAROS Y MICAS E.I.R.L. || 20559330737 ||",
+        "LA CASONA GRILL POLLOS Y PARRILLAS E.I.R.L || 20611812788 ||" : "LA CASONA GRILL POLLOS Y PARRILLAS E.I.R.L || 20611812788 ||",
+        "LARICO LIMA DE NUÑEZ LUZ MARINA || 10295432531 ||" : "LARICO LIMA DE NUÑEZ LUZ MARINA || 10295432531 ||",
+        "LARICO VALDIVIA ARTURO CAYETANO (REPUESTERA COPACABANA) || 10293807162 ||" : "LARICO VALDIVIA ARTURO CAYETANO (REPUESTERA COPACABANA) || 10293807162 ||",
+        "LAURA JOVE ROBERTO || 10024282258 ||" : "LAURA JOVE ROBERTO || 10024282258 ||",
+        "LAZARTE MULLISACA FLOR DE MARIA (CARNICERIA MODELO FLOR) || 10424327889 ||" : "LAZARTE MULLISACA FLOR DE MARIA (CARNICERIA MODELO FLOR) || 10424327889 ||",
+        "LAZARTE MULLISACA MARIA DEL PILAR (CARNICERIA MARIA) || 10725775232 ||" : "LAZARTE MULLISACA MARIA DEL PILAR (CARNICERIA MARIA) || 10725775232 ||",
+        "LOAYZA VIZCARRA ALBERTO ESTEBAN (AGRO DISTRIBUCIONES) || 10304219641 ||" : "LOAYZA VIZCARRA ALBERTO ESTEBAN (AGRO DISTRIBUCIONES) || 10304219641 ||",
+        "LUBRESER PERU E.I.R.L. || 20603327099 ||" : "LUBRESER PERU E.I.R.L. || 20603327099 ||",
+        "LUCIUS S.A.C. (LA GRUTA HOTEL) || 20454140436 ||" : "LUCIUS S.A.C. (LA GRUTA HOTEL) || 20454140436 ||",
+        "MACK FERRE & MASSS S.A.C. || 20610362321 ||" : "MACK FERRE & MASSS S.A.C. || 20610362321 ||",
+        "MADERERA DE TRANSFORMACION COMERCIALIZACION ROMPEOLAS EIRL || 20527700508 ||" : "MADERERA DE TRANSFORMACION COMERCIALIZACION ROMPEOLAS EIRL || 20527700508 ||",
+        "MAMANI CAIRA MANUEL (BODEGA MAGISTERIAL) || 10297148481 ||" : "MAMANI CAIRA MANUEL (BODEGA MAGISTERIAL) || 10297148481 ||",
+        "MAMANI DELGADO DEMECIO (FERRETERIA DMD) || 10305893761 ||" : "MAMANI DELGADO DEMECIO (FERRETERIA DMD) || 10305893761 ||",
+        "MAMANI LAURA VICTORIA (REPUESTERA FENIX) || 10292555682 ||" : "MAMANI LAURA VICTORIA (REPUESTERA FENIX) || 10292555682 ||",
+        "MAMANI MOLLEZACA DAYSI ROSAIDA || 10470945635 ||" : "MAMANI MOLLEZACA DAYSI ROSAIDA || 10470945635 ||",
+        "MAMANI TUNI HERMINIA (PANADERIA MI JOSUE) || 10415740498 ||" : "MAMANI TUNI HERMINIA (PANADERIA MI JOSUE) || 10415740498 ||",
+        "MARCO ANTONIO PAREDES ARIAS || 10717966088 ||" : "MARCO ANTONIO PAREDES ARIAS || 10717966088 ||",
+        "MARROQUIN MARTINEZ CARMEN IRMA (COMERCIAL LUCA) || 10292105971 ||" : "MARROQUIN MARTINEZ CARMEN IRMA (COMERCIAL LUCA) || 10292105971 ||",
+        "MATIZADOS MULTI COLORS E.I.R.L. || 20539372255 ||" : "MATIZADOS MULTI COLORS E.I.R.L. || 20539372255 ||",
+        "MAVI PLASTIC EIRL || 20559169774 ||" : "MAVI PLASTIC EIRL || 20559169774 ||",
+        "MENAJES Y CRISTALES E.I.R.L. || 20601209943 ||" : "MENAJES Y CRISTALES E.I.R.L. || 20601209943 ||",
+        "MIA COLORS E.I.R.L. || 20603742843 ||" : "MIA COLORS E.I.R.L. || 20603742843 ||",
+        "MINAGI S.A.C. || 20605932593 ||" : "MINAGI S.A.C. || 20605932593 ||",
+        "MINIMARKET MONTERREY E.I.R.L. || 20600712081 ||" : "MINIMARKET MONTERREY E.I.R.L. || 20600712081 ||",
+        "MOLLOHUANCA KANA LIZBETH PATRICIA (KAYARA) || 10734188854 ||" : "MOLLOHUANCA KANA LIZBETH PATRICIA (KAYARA) || 10734188854 ||",
+        "MONTOYA ÑAUPA ARIS EFANY  || 10748064660 ||" : "MONTOYA ÑAUPA ARIS EFANY  || 10748064660 ||",
+        "MULTISERVICIOS ALACYN E.I.R.L. || 20608098250 ||" : "MULTISERVICIOS ALACYN E.I.R.L. || 20608098250 ||",
+        "MULTISERVICIOS E INGENIERIA FUERZA MOTRIZ S.R.L. || 20532846049 ||" : "MULTISERVICIOS E INGENIERIA FUERZA MOTRIZ S.R.L. || 20532846049 ||",
+        "MULTISERVICIOS E INVERSIONES AUTOMOTOR G & M E.I.R.L. || 20602424902 ||" : "MULTISERVICIOS E INVERSIONES AUTOMOTOR G & M E.I.R.L. || 20602424902 ||",
+        "MULTISERVICIOS PACIFICO E&E SAC || 20611062983 ||" : "MULTISERVICIOS PACIFICO E&E SAC || 20611062983 ||",
+        "MULTISERVIS LOBITOS EIRLTDA || 20229525442 ||" : "MULTISERVIS LOBITOS EIRLTDA || 20229525442 ||",
+        "MUNDO INOX EIRL || 20456063684 ||" : "MUNDO INOX EIRL || 20456063684 ||",
+        "NEDLAN PCS - S.R.L. || 20454628030 ||" : "NEDLAN PCS - S.R.L. || 20454628030 ||",
+        "NEGOCIOS TINA E.I.R.L. || 20559177955 ||" : "NEGOCIOS TINA E.I.R.L. || 20559177955 ||",
+        "OCTAVIOS & HERMANOS E.I.R.L. || 20605709860 ||" : "OCTAVIOS & HERMANOS E.I.R.L. || 20605709860 ||",
+        "OCTAVIOS S.A.C. || 20455653194 ||" : "OCTAVIOS S.A.C. || 20455653194 ||",
+        "OG FAMILY GROUP SOCIEDAD ANONIMA CERRADA || 20611281570 ||" : "OG FAMILY GROUP SOCIEDAD ANONIMA CERRADA || 20611281570 ||",
+        "OPEN MIND TECHNOLOGIES EMPRESA INDIVIDUAL DE RESP. LIMITADA - OPEN MIND TECHNOLOGIES E.I.R.L. || 20601082200 ||" : "OPEN MIND TECHNOLOGIES EMPRESA INDIVIDUAL DE RESP. LIMITADA - OPEN MIND TECHNOLOGIES E.I.R.L. || 20601082200 ||",
+        "ORMEÑO GALVEZ KEVIN JOSUE || 10767304205 ||" : "ORMEÑO GALVEZ KEVIN JOSUE || 10767304205 ||",
+        "PACHO ROMAN DAYCI MAGALI || 10448728558 ||" : "PACHO ROMAN DAYCI MAGALI || 10448728558 ||",
+        "PANTIGOSO VELASQUEZ CARMEN ROSA (FLOWER & XAVIER) || 10296416903 ||" : "PANTIGOSO VELASQUEZ CARMEN ROSA (FLOWER & XAVIER) || 10296416903 ||",
+        "PANUERA CRUZ JUAN CARLOS || 10410137025 ||" : "PANUERA CRUZ JUAN CARLOS || 10410137025 ||",
+        "PAZ DE CORNEJO TANIA MARCELAN (FERRETERIA CORPAZ) || 10488436355 ||" : "PAZ DE CORNEJO TANIA MARCELAN (FERRETERIA CORPAZ) || 10488436355 ||",
+        "PLASTIHOGAR E.I.R.L. || 20454673256 ||" : "PLASTIHOGAR E.I.R.L. || 20454673256 ||",
+        "PLS SERVICIO AUTOMOTRIZ EIRL || 20602598013 ||" : "PLS SERVICIO AUTOMOTRIZ EIRL || 20602598013 ||",
+        "POLICLINICO SANTA INES E.I.R.L. || 20608007858 ||" : "POLICLINICO SANTA INES E.I.R.L. || 20608007858 ||",
+        "PONCE ZAICO DUVALI GERALDINE || 10467250693 ||" : "PONCE ZAICO DUVALI GERALDINE || 10467250693 ||",
+        "PROAUTO FB SERVICE E.I.R.L. || 20600966279 ||" : "PROAUTO FB SERVICE E.I.R.L. || 20600966279 ||",
+        "PROCOM SERVICIOS ESPECIALIZADOS E.I.R.L. || 20605668136 ||" : "PROCOM SERVICIOS ESPECIALIZADOS E.I.R.L. || 20605668136 ||",
+        "PRODUCTOS ALIMENTICIOS NACIONALES TASAICO S.A.C. || 20453895379 ||" : "PRODUCTOS ALIMENTICIOS NACIONALES TASAICO S.A.C. || 20453895379 ||",
+        "PRODUCTOS CADYPLASTIC E.I.R.L. || 20456298720 ||" : "PRODUCTOS CADYPLASTIC E.I.R.L. || 20456298720 ||",
+        "QUIMICA INDUSTRIAL SOLVENTES SRL (QUISOL) || 20498052925 ||" : "QUIMICA INDUSTRIAL SOLVENTES SRL (QUISOL) || 20498052925 ||",
+        "RADIODIAGNÓSTICO FIGUEROA MENDOZA E.I.R.L. || 20609477165 ||" : "RADIODIAGNÓSTICO FIGUEROA MENDOZA E.I.R.L. || 20609477165 ||",
+        "RADISUR DISTRIBUCIONES Y SERVICIOS GENERALES E.I.R.L. || 20609038625 ||" : "RADISUR DISTRIBUCIONES Y SERVICIOS GENERALES E.I.R.L. || 20609038625 ||",
+        "RAMOS VENTURA MARIA VIRGINIA || 10047258044 ||" : "RAMOS VENTURA MARIA VIRGINIA || 10047258044 ||",
+        "RAPIDO VIP CAMANA S.A.C. || 20602337511 ||" : "RAPIDO VIP CAMANA S.A.C. || 20602337511 ||",
+        "REDIRED EIRLTDA || 20272611671 ||" : "REDIRED EIRLTDA || 20272611671 ||",
+        "RENEGADO TRANS S.R.L. || 20456022651 ||" : "RENEGADO TRANS S.R.L. || 20456022651 ||",
+        "REPAMA AUTOMOTRIZ E.I.R.L. || 20498291598 ||" : "REPAMA AUTOMOTRIZ E.I.R.L. || 20498291598 ||",
+        "REPRESENTACIONES SUCARS EIRL || 20605307532 ||" : "REPRESENTACIONES SUCARS EIRL || 20605307532 ||",
+        "REPUESTO JHON S.R.L. || 20607131946 ||" : "REPUESTO JHON S.R.L. || 20607131946 ||",
+        "REPUESTOS & CORPORACIONES NIKKO E.I.R.L. || 20610721070 ||" : "REPUESTOS & CORPORACIONES NIKKO E.I.R.L. || 20610721070 ||",
+        "REPUESTOS AUTOMOTRIZ LALO E.I.R.L. || 20601352801 ||" : "REPUESTOS AUTOMOTRIZ LALO E.I.R.L. || 20601352801 ||",
+        "REPUESTOS EL MISTIANO S.R.L. || 20539539133 ||" : "REPUESTOS EL MISTIANO S.R.L. || 20539539133 ||",
+        "REPUESTOS GUTI E.I.R.L. || 20539560094 ||" : "REPUESTOS GUTI E.I.R.L. || 20539560094 ||",
+        "REPUESTOS IMPORTS SAKURA MOTORSS E.I.R.L. || 20606478250 ||" : "REPUESTOS IMPORTS SAKURA MOTORSS E.I.R.L. || 20606478250 ||",
+        "REPUESTOS MOTOR PLAZA S.A.C. || 20603182261 ||" : "REPUESTOS MOTOR PLAZA S.A.C. || 20603182261 ||",
+        "REPUESTOS PACIFICO E.I.R.L. || 20454902972 ||" : "REPUESTOS PACIFICO E.I.R.L. || 20454902972 ||",
+        "REPUESTOS PHARIS E.I.R.L. || 20611594420 ||" : "REPUESTOS PHARIS E.I.R.L. || 20611594420 ||",
+        "REPUESTOS SAKURA MOTORS E.I.R.L. || 20454623666 ||" : "REPUESTOS SAKURA MOTORS E.I.R.L. || 20454623666 ||",
+        "REPUESTOS SAN FERNANDO LC S.A.C. || 20602541496 ||" : "REPUESTOS SAN FERNANDO LC S.A.C. || 20602541496 ||",
+        "REPUESTOS TOYONISA E.I.R.L. || 20605421068 ||" : "REPUESTOS TOYONISA E.I.R.L. || 20605421068 ||",
+        "RODRIGUEZ QUISPE VIRGINIA VIOLETA (MUEBLERIA JHONCITO) || 10404288861 ||" : "RODRIGUEZ QUISPE VIRGINIA VIOLETA (MUEBLERIA JHONCITO) || 10404288861 ||",
+        "ROJAS TITO ESTEBAN RENE (FERRETERIA SAGRADO CORAZON) || 10293855132 ||" : "ROJAS TITO ESTEBAN RENE (FERRETERIA SAGRADO CORAZON) || 10293855132 ||",
+        "S.L.S. MOTORS E.I.R.L. || 20601974119 ||" : "S.L.S. MOTORS E.I.R.L. || 20601974119 ||",
+        "SALLUCA CHURATA LOURDES (FERRETERIA ARCOIRIS) || 10460808249 ||" : "SALLUCA CHURATA LOURDES (FERRETERIA ARCOIRIS) || 10460808249 ||",
+        "SAMARI S.A.C || 20551380794 ||" : "SAMARI S.A.C || 20551380794 ||",
+        "SAMARI TRAVEL & TOURS E.I.R.L. || 20610830031 ||" : "SAMARI TRAVEL & TOURS E.I.R.L. || 20610830031 ||",
+        "SANALEA REAÑO CELIA (SUPER ADOBO) || 10293133331 ||" : "SANALEA REAÑO CELIA (SUPER ADOBO) || 10293133331 ||",
+        "SARYRIS SERVICIOS TURISTICOS E.I.R.L.  || 20602282423 ||" : "SARYRIS SERVICIOS TURISTICOS E.I.R.L.  || 20602282423 ||",
+        "SAYURI DISTRIBUCIONES S.R.L. || 20601135095 ||" : "SAYURI DISTRIBUCIONES S.R.L. || 20601135095 ||",
+        "SERVICENTRO RIGO S S.R.L. || 20272858480 ||" : "SERVICENTRO RIGO S S.R.L. || 20272858480 ||",
+        "SERVICIOS Y DISTRIBUCIONES ALAINA E.I.R.L. || 20604140430 ||" : "SERVICIOS Y DISTRIBUCIONES ALAINA E.I.R.L. || 20604140430 ||",
+        "SERVIN JAREMS E.I.R.L. || 20600595181 ||" : "SERVIN JAREMS E.I.R.L. || 20600595181 ||",
+        "SOLO CABLES FORZA E.I.R.L. || 20606979771 ||" : "SOLO CABLES FORZA E.I.R.L. || 20606979771 ||",
+        "SOLO CABLES IMPORTACIONES Y SERVICIOS S.A.C. || 20434884811 ||" : "SOLO CABLES IMPORTACIONES Y SERVICIOS S.A.C. || 20434884811 ||",
+        "SOLORZANO AQUINO ELSA (COMERCIAL SOL) || 10459444535 ||" : "SOLORZANO AQUINO ELSA (COMERCIAL SOL) || 10459444535 ||",
+        "SOLUCION AUTOMOTRIZ AREQUIPA E.I.R.L. || 20603179847 ||" : "SOLUCION AUTOMOTRIZ AREQUIPA E.I.R.L. || 20603179847 ||",
+        "SOLUCIONESONLINE S.A.C. || 20454910215 ||" : "SOLUCIONESONLINE S.A.C. || 20454910215 ||",
+        "STOP GIRLS S.A.C. || 20455472211 ||" : "STOP GIRLS S.A.C. || 20455472211 ||",
+        "SULLCA MAMANI GREGORIO DOROTEO (GS AUTOMOTRIZ) || 10293841328 ||" : "SULLCA MAMANI GREGORIO DOROTEO (GS AUTOMOTRIZ) || 10293841328 ||",
+        "TACORA TORRES YOVANA LUZ (FERRETERIA ANTARES) || 10295923381 ||" : "TACORA TORRES YOVANA LUZ (FERRETERIA ANTARES) || 10295923381 ||",
+        "TASAICO GOURMET EMPRESA INDIVIDUAL DE RESPONSABILIDAD LIMITADA || 20603260016 ||" : "TASAICO GOURMET EMPRESA INDIVIDUAL DE RESPONSABILIDAD LIMITADA || 20603260016 ||",
+        "TEAM BOLIVAR SOCIEDAD ANONIMA CERRADA - TEAM BOLIVAR S.A.C. || 20602062211 ||" : "TEAM BOLIVAR SOCIEDAD ANONIMA CERRADA - TEAM BOLIVAR S.A.C. || 20602062211 ||",
+        "TERAN SANCHEZ PILAR (JAKARANDA) || 10292791343 ||" : "TERAN SANCHEZ PILAR (JAKARANDA) || 10292791343 ||",
+        "TINOCO TAPIA JORGE RAUL (COMERCIAL KOKITO) || 10047211340 ||" : "TINOCO TAPIA JORGE RAUL (COMERCIAL KOKITO) || 10047211340 ||",
+        "TINOCO TAPIA WILFREDO JUAN (FERRETERIA MARTINO) || 10433028304 ||" : "TINOCO TAPIA WILFREDO JUAN (FERRETERIA MARTINO) || 10433028304 ||",
+        "TRADICION COLCA E.I.R.L. || 20498665692 ||" : "TRADICION COLCA E.I.R.L. || 20498665692 ||",
+        "TRANSPORTES OCSA E.I.R.L. || 20456021680 ||" : "TRANSPORTES OCSA E.I.R.L. || 20456021680 ||",
+        "TRANSPORTES PILVAS E.I.R.L. || 20455817308 ||" : "TRANSPORTES PILVAS E.I.R.L. || 20455817308 ||",
+        "TRELLES TINUCO SHAMER (RESTAURANTE EL ARTE)  || 10478543056 ||" : "TRELLES TINUCO SHAMER (RESTAURANTE EL ARTE)  || 10478543056 ||",
+        "TUNING IMPORTACIONES BOX E.I.R.L. || 20456063684 ||" : "TUNING IMPORTACIONES BOX E.I.R.L. || 20456063684 ||",
+        "URIARTE PEREZ ELIANA JACKELINE (EL DORADO SAZON) || 10309537292 ||" : "URIARTE PEREZ ELIANA JACKELINE (EL DORADO SAZON) || 10309537292 ||",
+        "VASQUEZ AGUILAR ANTONIO || 10294072697 ||" : "VASQUEZ AGUILAR ANTONIO || 10294072697 ||",
+        "VEGO INVERSIONES S.A.C || 20610979301 ||" : "VEGO INVERSIONES S.A.C || 20610979301 ||",
+        "VELASQUEZ SILVA CESAR JAVIER (PARK HOSTEL) || 10295972217 ||" : "VELASQUEZ SILVA CESAR JAVIER (PARK HOSTEL) || 10295972217 ||",
+        "VELASQUEZ URETA MAXIMO CESAR (PANADERIA DON MAX) || 10292039552 ||" : "VELASQUEZ URETA MAXIMO CESAR (PANADERIA DON MAX) || 10292039552 ||",
+        "VILCAPAZA SALCEDO WILLIAMS FRANK || 10474096110 ||" : "VILCAPAZA SALCEDO WILLIAMS FRANK || 10474096110 ||",
+        "VILLEGAS TINTAYA AVELINA (BOTICA SOCABAYA) || 10295474667 ||" : "VILLEGAS TINTAYA AVELINA (BOTICA SOCABAYA) || 10295474667 ||",
+        "XACT PERU S.A.C. || 20556119636 ||" : "XACT PERU S.A.C. || 20556119636 ||",
+        "Y & S E.I.R.L. || 20455755353 ||" : "Y & S E.I.R.L. || 20455755353 ||",
+        "ZAMUDIO CUBA DE PINTO MARIA TERESA (PICANTERIA EL COGOLLO) || 10293370724 ||" : "ZAMUDIO CUBA DE PINTO MARIA TERESA (PICANTERIA EL COGOLLO) || 10293370724 ||",
+
+
+        // Agregar más opciones según sea necesario
+      };
+    }
+    else {
+      opciones = {
+        // Opciones para otros productos
+      };
+    }
+    // Limpiar opciones actuales
+    institucionSelect.innerHTML = "";
+    // Agregar las nuevas opciones
+    for (var key in opciones) {
+      var option = document.createElement("option");
+      option.value = key;
+      option.textContent = opciones[key];
+      institucionSelect.appendChild(option);
+    }
+  }
+
+// Agregar evento onchange al campo de producto
+  document.getElementById("producto").addEventListener("change", cargarInstituciones);
+
+  </script>
+</body>
+</html>
+
+
